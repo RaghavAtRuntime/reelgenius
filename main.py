@@ -2,25 +2,31 @@
 
 from movie_user_classes import User
 from movie_user_classes import Movie
+import csv
 
 user_graph = {}
 movie_dict = {}
-movies_file = "/movies.csv"  # TODO: Fill in Later
-ratings_file = "/ratings.csv"  # TODO: Fill in Later
+movies_file = "data/movies.csv"  # TODO: Fill in Later
+ratings_file = "data/ratings.csv"  # TODO: Fill in Later
 
 
 def import_movies(movie_file: str, movies: dict) -> None:
     """Reads the movie_file and populates movies
     """
-    # for each row in moviesFile
-    #     movie = new
-    #     Movie(movieId, title)
-    # movieDict.add(movie)
-    # TODO
+    with open(movie_file, 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            movie_id = int(row[0])
+            title = row[1]
+            movie = Movie(movie_id, title)
+            movies[movie_id] = movie
 
 
 def import_ratings(ratings_file: str, users: dict) -> None:
     """Reads the ratings_file and populates users
+    Preconditions:
+     - each entry in ratings_file is unique
     """
     # user = None
     # currUserId = 0
@@ -30,7 +36,15 @@ def import_ratings(ratings_file: str, users: dict) -> None:
     #     user = findUser(userId)
     # currUserId = userId
     # addRating(user, movieId, rating)
-    # TODO
+    with open(ratings_file, 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            curr_userid = int(row[0])
+            movie_id = int(row[1])
+            rating = int(row[2])
+            curr_user = find_or_add_user(users, curr_userid)        # Does our dict allocation for us
+            add_rating(curr_user, movie_id, rating)
 
 
 def process_compat_users(users: dict[int, User]) -> None:
