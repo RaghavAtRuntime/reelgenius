@@ -16,6 +16,7 @@ def import_movies(movie_file: str, movies: dict) -> None:
     #     movie = new
     #     Movie(movieId, title)
     # movieDict.add(movie)
+    # TODO
 
 
 def import_ratings(ratings_file: str, users: dict) -> None:
@@ -29,6 +30,7 @@ def import_ratings(ratings_file: str, users: dict) -> None:
     #     user = findUser(userId)
     # currUserId = userId
     # addRating(user, movieId, rating)
+    # TODO
 
 
 def process_compat_users(users: dict[int, User]) -> None:
