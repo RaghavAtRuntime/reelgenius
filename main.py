@@ -28,14 +28,6 @@ def import_ratings(ratings_file: str, users: dict) -> None:
     Preconditions:
      - each entry in ratings_file is unique
     """
-    # user = None
-    # currUserId = 0
-    # for each row in ratingsFile
-    #     // if new user
-    # if currUserId != userId
-    #     user = findUser(userId)
-    # currUserId = userId
-    # addRating(user, movieId, rating)
     with open(ratings_file, 'r') as file:
         reader = csv.reader(file)
         next(reader)
