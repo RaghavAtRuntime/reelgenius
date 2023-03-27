@@ -64,6 +64,6 @@ class Movie:
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
 
-    def get_users(self, dict_users : dict[int, User]) -> list[User]:
+    def get_users(self, dict_users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
