@@ -1,23 +1,6 @@
 # Movie and User Classes
 from __future__ import annotations
-class Graph:
-    """A class that represents the graph
-    Instance Attributes
-    - movies:
-        A mapping containing movie with id.
-    - users:
-        A mapping containing the users with id.
 
-
-    """
-    movies: dict[int, Movie]
-    users: dict[int, User]
-
-    def __init__(self, movies: dict[int, Movie], users: dict[int, User]) -> None:
-        """ initialize graph
-        """
-        self.movies = movies
-        self.users = users
 
 class User:
     """ A class that represents a user
