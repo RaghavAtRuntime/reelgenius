@@ -89,6 +89,7 @@ def add_rating(user: User, id: int, rating: int) -> None:
     # user.movieRatings.add(movieId, rating)
     # movie = movieDict.find(movieId)
     # movie.userRatings.add(userId, rating)
+    user.movie_ratings[id] = rating
 
 
 def get_movie_users(movies: list[Movie]) -> set[int]:
