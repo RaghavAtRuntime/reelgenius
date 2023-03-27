@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/reelgenius.iml" filepath="$PROJECT_DIR$/.idea/reelgenius.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ReelGenius.iml" filepath="$PROJECT_DIR$/.idea/ReelGenius.iml" />
     </modules>
   </component>
 </project>

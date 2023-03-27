@@ -29,10 +29,15 @@ class User:
     def __init__(self, user_id: int):
         """Initialize this user with the given user_id, and with empty movie_ratings,
         user_compats, and recommendations"""
+        self.user_id = user_id
+        self.movie_ratings = {}
+        self.user_compats = {}
+        self.recommendations = []
 
     def get_movies(self) -> list[Movie]:
         """Return a list of movies this user has rated
         """
+
 
 
 class Movie:
@@ -59,6 +64,6 @@ class Movie:
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
 
-    def get_users(self) -> list[User]:
+    def get_users(self, dict_users : dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
