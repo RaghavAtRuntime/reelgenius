@@ -1,6 +1,23 @@
 # Movie and User Classes
 from __future__ import annotations
+class Graph:
+    """A class that represents the graph
+    Instance Attributes
+    - movies:
+        A mapping containing movie with id.
+    - users:
+        A mapping containing the users with id.
 
+
+    """
+    movies: dict[int, Movie]
+    users: dict[int, User]
+
+    def __init__(self, movies: dict[int, Movie], users: dict[int, User]) -> None:
+        """ initialize graph
+        """
+        self.movies = movies
+        self.users = users
 
 class User:
     """ A class that represents a user
@@ -39,7 +56,6 @@ class User:
         """
 
 
-
 class Movie:
     """ A class that represents a movie
 
@@ -64,6 +80,11 @@ class Movie:
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
 
-    def get_users(self, dict_users : dict[int, User]) -> list[User]:
+    def get_users(self, users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
+        list = []
+        for user_id in self.user_ratings.keys():
+            if user_id in users:
+                list.append(users[user_id])
+        return User
