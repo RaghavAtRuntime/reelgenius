@@ -95,9 +95,9 @@ def add_rating(user: User, id: int, rating: int) -> None:
 def get_movie_users(movies: list[Movie]) -> set[int]:
     """Returns a set of ids for users who have a rating for at least one movie in movies
     """
-    # userSet = set()
-    # for movie in movies
-    #     userSet.add(movie.getUsers())
+    userSet = set()
+    for movie in movies:
+        userSet.add(movie.getUsers())
     # return userSet
 
 
