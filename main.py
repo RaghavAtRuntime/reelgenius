@@ -76,6 +76,11 @@ def find_or_add_user(users: dict[int, User], id: int) -> User:
     #   user = new User(userId)
     #   userGraph.add(user)
     #   return user
+    if id in users:
+        return users[id]
+    else:
+        users[id] = User(id)
+        return users[id]
 
 
 def add_rating(user: User, id: int, rating: int) -> None:
