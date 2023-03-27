@@ -67,4 +67,3 @@ class Movie:
     def get_users(self, dict_users : dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
-        for user
