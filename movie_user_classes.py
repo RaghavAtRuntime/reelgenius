@@ -72,6 +72,7 @@ class Movie:
                 list.append(users[user_id])
         return User
 
+
 class Graph:
     """ A class to represent a graph
 
@@ -81,5 +82,5 @@ class Graph:
     - _users:
         A mapping of the users stored in this graph. Each key is a user id and each value is a User object
     """
-    _movies: dict[int, Movie]
-    _users: dict[int, User]
+    movies: dict[int, Movie]
+    users: dict[int, User]

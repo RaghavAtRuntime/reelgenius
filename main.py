@@ -3,15 +3,15 @@
 import numpy as np
 from movie_user_classes import User
 from movie_user_classes import Movie
+from movie_user_classes import Graph
 import csv
 
-user_graph = {}
-movie_dict = {}
+movie_user_graph = Graph()
 movies_file = "data/movies.csv"
 ratings_file = "data/ratings.csv"
 
 
-def import_movies(movie_file: str, movies: dict) -> None:
+def import_movies(movie_file: str, graph: Graph) -> None:
     """Reads the movie_file and populates graph._movies
     """
     with open(movie_file, 'r') as file:
@@ -21,10 +21,10 @@ def import_movies(movie_file: str, movies: dict) -> None:
             movie_id = int(row[0])
             title = row[1]
             movie = Movie(movie_id, title)
-            movies[movie_id] = movie
+            graph.movies[movie_id] = movie
 
 
-def import_ratings(rating_file: str, users: dict) -> None:
+def import_ratings(rating_file: str, graph: Graph) -> None:
     """Reads the ratings_file and creates new users, populates graph._users and modifies Movie.ratings and User.ratings
     Preconditions:
      - each entry in ratings_file is unique
@@ -36,12 +36,12 @@ def import_ratings(rating_file: str, users: dict) -> None:
             curr_userid = int(row[0])
             movie_id = int(row[1])
             rating = int(float(row[2]))
-            curr_user = find_or_add_user(users, curr_userid)  # Does our dict allocation for us
+            curr_user = find_or_add_user(graph, curr_userid)  # Does our dict allocation for us
             add_rating(curr_user, movie_id, rating)
 
 
-def process_compat_users(users: dict[int, User]) -> None:
-    """Finds compatible users for each user in users, and then updates their user_compats attribute accordingly
+def process_compat_users(graph: Graph) -> None:
+    """Finds compatible users for each user in graph, and then updates their user_compats attribute accordingly
     """
     # for each user in userGraph
     #     compatUserIds = getMovieUsers(user.getMovies())
@@ -50,8 +50,8 @@ def process_compat_users(users: dict[int, User]) -> None:
     # TODO
 
 
-def _process_compat_score(users: dict[int, User]) -> None:
-    """Compute each user in users compatability scores
+def _process_compat_score(graph: Graph) -> None:
+    """Compute the compatability scores for each user in the graph
     """
     # TODO
     # Idea: take the average of the differences in score between a user and its compat users
@@ -62,16 +62,16 @@ def _process_compat_score(users: dict[int, User]) -> None:
 
 
 
-def process_movie_recommends(users: dict[int, User], n: int) -> None:
-    """Generates a list of n movie reccommendations for each user in users and updates their recommended attribute
+def process_movie_recommends(graph: Graph, n: int) -> None:
+    """Generates a list of n movie reccommendations for each user in grpah and updates their recommended attribute
     accordingly
     """
     # TODO
 
 
-def find_or_add_user(users: dict[int, User], id: int) -> User:
-    """Returns the user in users with user_id == id. If such a user does not exist in users, the function instead
-     creates a new user with user_id = id, adds it to users, and returns that user
+def find_or_add_user(graph: Graph, id: int) -> User:
+    """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
+    instead creates a new user with user_id = id, adds it to graph.users, and returns that user
     """
     # //same user
     # if(user != null & user.id == userId)
@@ -83,11 +83,11 @@ def find_or_add_user(users: dict[int, User], id: int) -> User:
     #   user = new User(userId)
     #   userGraph.add(user)
     #   return user
-    if id in users:
-        return users[id]
+    if id in graph.users:
+        return graph.users[id]
     else:
-        users[id] = User(id)
-        return users[id]
+        graph.users[id] = User(id)
+        return graph.users[id]
 
 
 def add_rating(user: User, movieid: int, rating: int) -> None:
@@ -109,6 +109,8 @@ def get_movie_users(movies: list[Movie],users:dict[int,User]) -> set[int]:
         all_users.extend(movie.get_users(users))
     user_id_lst = [user.user_id for user in all_users]
     return set(user_id_lst)
+
+
 def get_movie_by_id(movie_id:int) -> Movie:
 
 
