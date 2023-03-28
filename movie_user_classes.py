@@ -66,11 +66,12 @@ class Movie:
     def get_users(self, users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
-        list = []
+        user_list = []
         for user_id in self.user_ratings.keys():
             if user_id in users:
-                list.append(users[user_id])
-        return User
+                user_list.append(users[user_id])
+        return user_list
+
 
 
 class Graph:
