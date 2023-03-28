@@ -24,7 +24,7 @@ class User:
     user_id: int
     movie_ratings: dict[int, int]
     user_compats: dict[int, float]
-    recommendations: list[Movie]
+    recommendations: list[int]
 
     def __init__(self, user_id: int):
         """Initialize this user with the given user_id, and with empty movie_ratings,
@@ -62,15 +62,20 @@ class Movie:
     def __init__(self, movie_id: int, title: str):
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
+        self.movie_id = movie_id
+        self.title = title
+        self.user_ratings = {}
 
     def get_users(self, users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
-        list = []
+        user_list = []
         for user_id in self.user_ratings.keys():
             if user_id in users:
-                list.append(users[user_id])
-        return User
+                user_list.append(users[user_id])
+        return user_list
+
+
 
 class Graph:
     """ A class to represent a graph
@@ -83,3 +88,22 @@ class Graph:
     """
     _movies: dict[int, Movie]
     _users: dict[int, User]
+
+    def __init__(self):
+        self._movies = {}
+        self._users = {}
+
+    def add_movie(self, movie: Movie):
+        self._movies[movie.movie_id] = movie
+
+    def add_user(self, user: User):
+        self._users[user.user_id] = user
+
+    def get_movie(self, movie_id: int) -> Movie:
+        return self._movies[movie_id]
+
+    def get_user(self, user_id: int) -> User:
+        return self._users[user_id]
+
+    def user_exists(self, user_id: int) -> bool:
+        return user_id in self._users
