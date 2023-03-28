@@ -1,6 +1,6 @@
 # Main File
 
-import numpy as np
+# import numpy as np
 from movie_user_classes import User
 from movie_user_classes import Movie
 from movie_user_classes import Graph
@@ -35,7 +35,7 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
         for row in reader:
             curr_userid = int(row[0])
             movie_id = int(row[1])
-            rating = int(float(row[2]))
+            rating = float(row[2])
             curr_user = _find_or_add_user(graph, curr_userid)  # Does our dict allocation for us
             add_rating(graph, curr_user, movie_id, rating)
 
@@ -57,18 +57,40 @@ def process_compat_users(graph: Graph) -> None:
     # // add List as keys to Dict(might need conversion / typecast)
     # userCompats.add(compatUserIds)
     # TODO
+    for user in graph.get_all_users():
+        user_rated_movies = user.get_movies()
+        compat_user_ids = get_movie_users(user_rated_movies, graph)
+        compat_user_ids.remove(user.user_id)
+        _process_compat_score(graph, user, compat_user_ids)
 
 
-def _process_compat_score(graph: Graph) -> None:
-    """Compute the compatability scores for each user in the graph
+def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -> None:
+    """Compute the compatability scores between user, and all users with ids in compat_user_ids, and update
+    user.user_compats accordingly
+
+    Preconditions:
+    - graph.user_exists(user.user_id)
+    - all({graph.user_exists(id) for id in compat_user_ids})
     """
+
     # TODO
     # Idea: take the average of the differences in score between a user and its compat users
     # A: 1.5 - 5.0 = 3.5
     # B: 2.0 - 3.5 = 1.5
     # (3.5 + 1.5) / 2 = 2.5
     # 4.5 - 2.5 = 2.5 <- final score
-    pass
+    for user_id in compat_user_ids:
+        user2 = graph.get_user(user_id)
+        user1_movies = user.get_movies()
+        user2_movies = user2.get_movies()
+        shared_movies = user1_movies.intersection(user2_movies)
+        compat_score_so_far = 0.0
+        for movie_id in shared_movies:
+            user1_rating = user.get_rating(movie_id)
+            user2_rating = user2.get_rating(movie_id)
+            compat_score_so_far += abs(user1_rating - user2_rating)
+        compat_score_so_far = compat_score_so_far / len(shared_movies)
+        user.user_compats[user_id] = compat_score_so_far
 
 
 def process_movie_recommends(graph: Graph, n: int) -> None:
@@ -79,32 +101,31 @@ def process_movie_recommends(graph: Graph, n: int) -> None:
     pass
 
 
-def add_rating(graph: Graph, user: User, movie_id: int, rating: int) -> None:
+def add_rating(graph: Graph, user: User, movie_id: int, rating: float) -> None:
     """Adds a rating with movie id and rating to the user's movie_ratings attribute
     and adds a user and its user rating to the movie's user_ratings attribute
     """
     user.movie_ratings[movie_id] = rating
     movie = graph.get_movie(movie_id)
-    movie.user_ratings[user] = rating
+    movie.user_ratings[user.user_id] = rating
 
 
-def get_movie_users(movies: list[Movie], users: dict[int, User]) -> set[int]:
-    """Returns a set of ids for users who have a rating for at least one movie in movies
+def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
+    """Returns a set of ids for users in graph who have a rating for at least one movie whose id is in movies
     """
 
     # return userSet
-    all_users = []
-    for movie in movies:
-        all_users.extend(movie.get_users(users))
-    user_id_lst = [user.user_id for user in all_users]
-    return set(user_id_lst)
+    user_ids_so_far = []
+    for movie_id in movies:
+        user_ids_so_far.extend(graph.get_movie(movie_id).get_users())
+    return set(user_ids_so_far)
 
 
-if __name__ == '__main__':
-    from ui import ui_main
-
-    import_movies(movies_file, movie_user_graph)
-    import_ratings(ratings_file, movie_user_graph)
-    process_compat_users(movie_user_graph)
-    # process_movie_recommends()
-    ui_main(movie_user_graph)
+# if __name__ == '__main__':
+    # from ui import ui_main
+    #
+    # import_movies(movies_file, movie_user_graph)
+    # import_ratings(ratings_file, movie_user_graph)
+    # process_compat_users(movie_user_graph)
+    # # process_movie_recommends()
+    # ui_main(movie_user_graph)

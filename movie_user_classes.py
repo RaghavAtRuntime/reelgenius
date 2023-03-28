@@ -22,7 +22,7 @@ class User:
     - all({1 <= self.movie_ratings[m] <= 5 for m in self.movie_ratings})
     """
     user_id: int
-    movie_ratings: dict[int, int]
+    movie_ratings: dict[int, float]
     user_compats: dict[int, float]
     recommendations: list[int]
 
@@ -34,9 +34,19 @@ class User:
         self.user_compats = {}
         self.recommendations = []
 
-    def get_movies(self) -> list[Movie]:
-        """Return a list of movies this user has rated
+    def get_movies(self) -> set[int]:
+        """Return a set of movie ids for movies this user has rated
         """
+        movie_ids = {i for i in self.movie_ratings}
+        return movie_ids
+
+    def get_rating(self, movie_id) -> float:
+        """ Return the score this user gave for the movie with id == movie_id
+
+        Preconditions:
+        - movie_id in self.movie_ratings
+        """
+        return self.movie_ratings[movie_id]
 
 
 class Movie:
@@ -57,7 +67,7 @@ class Movie:
     """
     movie_id: int
     title: str
-    user_ratings: dict[int, int]
+    user_ratings: dict[int, float]
 
     def __init__(self, movie_id: int, title: str):
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
@@ -66,15 +76,11 @@ class Movie:
         self.title = title
         self.user_ratings = {}
 
-    def get_users(self, users: dict[int, User]) -> list[User]:
-        """Return a list of users that have rated this movie
+    def get_users(self) -> list[int]:
+        """Return a list of user ids for users that have rated this movie
         """
-        user_list = []
-        for user_id in self.user_ratings.keys():
-            if user_id in users:
-                user_list.append(users[user_id])
-        return user_list
-
+        user_ids = [id for id in self.user_ratings]
+        return user_ids
 
 
 class Graph:
@@ -93,17 +99,41 @@ class Graph:
         self._movies = {}
         self._users = {}
 
-    def add_movie(self, movie: Movie):
+    def get_all_users(self) -> list[User]:
+        """ Returns all users in this graph
+        """
+        users_so_far = []
+        for i in self._users:
+            users_so_far.append(self._users[i])
+        return users_so_far
+
+    def add_movie(self, movie: Movie) -> None:
+        """ Adds movie to self._movies
+        """
         self._movies[movie.movie_id] = movie
 
-    def add_user(self, user: User):
+    def add_user(self, user: User) -> None:
+        """ Adds user to self._users
+        """
         self._users[user.user_id] = user
 
     def get_movie(self, movie_id: int) -> Movie:
+        """ Returns the movie in this graph with id == movie_id
+
+        Preconditions:
+        - movie_id in self._movies
+        """
         return self._movies[movie_id]
 
     def get_user(self, user_id: int) -> User:
+        """ Returns the user in this graph with id == user_id
+
+        Preconditions:
+        - user_id in self._users
+        """
         return self._users[user_id]
 
     def user_exists(self, user_id: int) -> bool:
+        """ Returns whether the user with id == user_id is in this graph
+        """
         return user_id in self._users
