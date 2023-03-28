@@ -71,3 +71,15 @@ class Movie:
             if user_id in users:
                 list.append(users[user_id])
         return User
+
+class Graph:
+    """ A class to represent a graph
+
+    Instance Attributes:
+    - _movies:
+        A mapping of the movies stored in this graph. Each key is a movie id and each value is a Movie object
+    - _users:
+        A mapping of the users stored in this graph. Each key is a user id and each value is a User object
+    """
+    _movies: dict[int, Movie]
+    _users: dict[int, User]
