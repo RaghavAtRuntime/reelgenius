@@ -105,12 +105,5 @@ class Graph:
     def get_user(self, user_id: int) -> User:
         return self._users[user_id]
 
-    def find_or_add_user(self, user_id: int):
-        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
-        instead creates a new user with user_id = id, adds it to graph.users, and returns that user
-        """
-        if user_id in self._users:
-            return self._users[user_id]
-        else:
-            self._users[user_id] = User(user_id)
-            return self._users[user_id]
+    def user_exists(self, user_id: int) -> bool:
+        return user_id in self._users

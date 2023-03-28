@@ -36,8 +36,17 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             curr_userid = int(row[0])
             movie_id = int(row[1])
             rating = int(float(row[2]))
-            curr_user = graph.find_or_add_user(curr_userid)  # Does our dict allocation for us
+            curr_user = _find_or_add_user(graph, curr_userid)  # Does our dict allocation for us
             add_rating(graph, curr_user, movie_id, rating)
+
+
+def _find_or_add_user(graph: Graph, user_id: int):
+    """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
+    instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+    """
+    if not graph.user_exists(user_id):
+        graph.add_user(User(user_id))
+    return graph.get_user(user_id)
 
 
 def process_compat_users(graph: Graph) -> None:

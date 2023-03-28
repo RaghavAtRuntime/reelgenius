@@ -24,7 +24,18 @@ def _user_page(root: tk.Tk, graph: Graph, user: User):
 
     # Row 0
     ttk.Label(frm, text="ReelGenius", font=("Helvetica", 15)).grid(row=0, column=0)
-    ttk.Entry(frm).grid(row=0, column=1)
+    entry = ttk.Entry(frm)
+    entry.grid(row=0, column=1)
+
+    # def search():
+    #     entry_str = entry.get()
+    #     entry.delete(0, tk.END)
+    #     if entry_str.isdigit():
+    #         new_user_id = int(entry_str)
+    #         if graph.user_exists(new_user_id):
+    #             new_user = graph.get_user(new_user_id)
+    #             _user_page(root, graph, new_user)
+    #             frm.destroy()
     ttk.Button(frm, text="Search User").grid(row=0, column=2)
 
     # Row 1
