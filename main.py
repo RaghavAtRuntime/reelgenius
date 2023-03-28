@@ -12,7 +12,7 @@ ratings_file = "data/ratings.csv"
 
 
 def import_movies(movie_file: str, movies: dict) -> None:
-    """Reads the movie_file and populates movies
+    """Reads the movie_file and populates graph._movies
     """
     with open(movie_file, 'r') as file:
         reader = csv.reader(file)
@@ -25,7 +25,7 @@ def import_movies(movie_file: str, movies: dict) -> None:
 
 
 def import_ratings(rating_file: str, users: dict) -> None:
-    """Reads the ratings_file and populates users
+    """Reads the ratings_file and creates new users, populates graph._users and modifies Movie.ratings and User.ratings
     Preconditions:
      - each entry in ratings_file is unique
     """
@@ -50,11 +50,16 @@ def process_compat_users(users: dict[int, User]) -> None:
     # TODO
 
 
-def process_compat_score(users: dict[int, User]) -> None:
+def _process_compat_score(users: dict[int, User]) -> None:
     """Compute each user in users compatability scores
     """
     # TODO
     # Idea: take the average of the differences in score between a user and its compat users
+    # A: 1.5 - 5.0 = 3.5
+    # B: 2.0 - 3.5 = 1.5
+    # (3.5 + 1.5) / 2 = 2.5
+    # 4.5 - 2.5 = 2.5 <- final score
+
 
 
 def process_movie_recommends(users: dict[int, User], n: int) -> None:
