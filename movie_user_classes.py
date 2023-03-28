@@ -24,7 +24,7 @@ class User:
     user_id: int
     movie_ratings: dict[int, int]
     user_compats: dict[int, float]
-    recommendations: list[Movie]
+    recommendations: list[int]
 
     def __init__(self, user_id: int):
         """Initialize this user with the given user_id, and with empty movie_ratings,
@@ -86,9 +86,31 @@ class Graph:
     - _users:
         A mapping of the users stored in this graph. Each key is a user id and each value is a User object
     """
-    movies: dict[int, Movie]
-    users: dict[int, User]
+    _movies: dict[int, Movie]
+    _users: dict[int, User]
 
     def __init__(self):
-        self.movies = {}
-        self.users = {}
+        self._movies = {}
+        self._users = {}
+
+    def add_movie(self, movie: Movie):
+        self._movies[movie.movie_id] = movie
+
+    def add_user(self, user: User):
+        self._users[user.user_id] = user
+
+    def get_movie(self, movie_id: int) -> Movie:
+        return self._movies[movie_id]
+
+    def get_user(self, user_id: int) -> User:
+        return self._users[user_id]
+
+    def find_or_add_user(self, user_id: int):
+        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
+        instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+        """
+        if user_id in self._users:
+            return self._users[user_id]
+        else:
+            self._users[user_id] = User(user_id)
+            return self._users[user_id]

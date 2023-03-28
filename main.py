@@ -21,7 +21,7 @@ def import_movies(movie_file: str, graph: Graph) -> None:
             movie_id = int(row[0])
             title = row[1]
             movie = Movie(movie_id, title)
-            graph.movies[movie_id] = movie
+            graph.add_movie(movie)
 
 
 def import_ratings(rating_file: str, graph: Graph) -> None:
@@ -36,7 +36,7 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             curr_userid = int(row[0])
             movie_id = int(row[1])
             rating = int(float(row[2]))
-            curr_user = find_or_add_user(graph, curr_userid)  # Does our dict allocation for us
+            curr_user = graph.find_or_add_user(curr_userid)  # Does our dict allocation for us
             add_rating(graph, curr_user, movie_id, rating)
 
 
@@ -59,7 +59,7 @@ def _process_compat_score(graph: Graph) -> None:
     # B: 2.0 - 3.5 = 1.5
     # (3.5 + 1.5) / 2 = 2.5
     # 4.5 - 2.5 = 2.5 <- final score
-
+    pass
 
 
 def process_movie_recommends(graph: Graph, n: int) -> None:
@@ -67,39 +67,19 @@ def process_movie_recommends(graph: Graph, n: int) -> None:
     accordingly
     """
     # TODO
+    pass
 
 
-def find_or_add_user(graph: Graph, id: int) -> User:
-    """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
-    instead creates a new user with user_id = id, adds it to graph.users, and returns that user
-    """
-    # //same user
-    # if(user != null & user.id == userId)
-    #   return user
-    # user = userGraph.find(userId)
-
-    # //new user
-    # if user = null
-    #   user = new User(userId)
-    #   userGraph.add(user)
-    #   return user
-    if id in graph.users:
-        return graph.users[id]
-    else:
-        graph.users[id] = User(id)
-        return graph.users[id]
-
-
-def add_rating(graph: Graph, user: User, movieid: int, rating: int) -> None:
+def add_rating(graph: Graph, user: User, movie_id: int, rating: int) -> None:
     """Adds a rating with movie id and rating to the user's movie_ratings attribute
     and adds a user and its user rating to the movie's user_ratings attribute
     """
-    user.movie_ratings[movieid] = rating
-    movie = graph.movies[movieid]
+    user.movie_ratings[movie_id] = rating
+    movie = graph.get_movie(movie_id)
     movie.user_ratings[user] = rating
 
 
-def get_movie_users(movies: list[Movie],users:dict[int,User]) -> set[int]:
+def get_movie_users(movies: list[Movie], users: dict[int, User]) -> set[int]:
     """Returns a set of ids for users who have a rating for at least one movie in movies
     """
 
@@ -113,6 +93,7 @@ def get_movie_users(movies: list[Movie],users:dict[int,User]) -> set[int]:
 
 if __name__ == '__main__':
     from ui import ui_main
+
     import_movies(movies_file, movie_user_graph)
     import_ratings(ratings_file, movie_user_graph)
     process_compat_users(movie_user_graph)
