@@ -34,10 +34,9 @@ class User:
         self.user_compats = {}
         self.recommendations = []
 
-    def get_movies(self) -> list[Movie]:
-        """Return a list of movies this user has rated
+    def get_movies(self) -> list[int]:
+        """Return the list of movie ids this user has rated
         """
-
 
 
 class Movie:
@@ -64,6 +63,19 @@ class Movie:
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
 
-    def get_users(self, dict_users : dict[int, User]) -> list[User]:
+    def get_users(self, dict_users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
         """
+
+
+class Graph:
+    """ A class to represent a graph
+
+    Instance Attributes:
+    - _movies:
+        A mapping of the movies stored in this graph. Each key is a movie id and each value is a Movie object
+    - _users:
+        A mapping of the users stored in this graph. Each key is a user id and each value is a User object
+    """
+    _movies: dict[int, Movie]
+    _users: dict[int, User]
