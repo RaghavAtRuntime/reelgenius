@@ -99,16 +99,17 @@ def add_rating(user: User, movieid: int, rating: int) -> None:
     movie.user_ratings[user] = rating
 
 
-def get_movie_users(movies: list[Movie]) -> set[int]:
+def get_movie_users(movies: list[Movie],users:dict[int,User]) -> set[int]:
     """Returns a set of ids for users who have a rating for at least one movie in movies
     """
 
     # return userSet
     all_users = []
     for movie in movies:
-        all_users.extend(movie.get_users())
+        all_users.extend(movie.get_users(users))
     user_id_lst = [user.user_id for user in all_users]
     return set(user_id_lst)
+def get_movie_by_id(movie_id:int) -> Movie:
 
 
 if __name__ == '__main__':
