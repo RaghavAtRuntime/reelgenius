@@ -37,7 +37,7 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             movie_id = int(row[1])
             rating = int(float(row[2]))
             curr_user = find_or_add_user(graph, curr_userid)  # Does our dict allocation for us
-            add_rating(curr_user, movie_id, rating)
+            add_rating(graph, curr_user, movie_id, rating)
 
 
 def process_compat_users(graph: Graph) -> None:
@@ -90,12 +90,12 @@ def find_or_add_user(graph: Graph, id: int) -> User:
         return graph.users[id]
 
 
-def add_rating(user: User, movieid: int, rating: int) -> None:
+def add_rating(graph: Graph, user: User, movieid: int, rating: int) -> None:
     """Adds a rating with movie id and rating to the user's movie_ratings attribute
     and adds a user and its user rating to the movie's user_ratings attribute
     """
     user.movie_ratings[movieid] = rating
-    movie = movie_dict[movieid]
+    movie = graph.movies[movieid]
     movie.user_ratings[user] = rating
 
 
@@ -111,11 +111,10 @@ def get_movie_users(movies: list[Movie],users:dict[int,User]) -> set[int]:
     return set(user_id_lst)
 
 
-def get_movie_by_id(movie_id:int) -> Movie:
-
-
 if __name__ == '__main__':
-    import_movies(movies_file, movie_dict)
-    import_ratings(ratings_file, user_graph)
-    process_compat_users(user_graph)
+    from ui import ui_main
+    import_movies(movies_file, movie_user_graph)
+    import_ratings(ratings_file, movie_user_graph)
+    process_compat_users(movie_user_graph)
     # process_movie_recommends()
+    ui_main(movie_user_graph)

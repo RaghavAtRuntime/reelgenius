@@ -62,6 +62,9 @@ class Movie:
     def __init__(self, movie_id: int, title: str):
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
+        self.movie_id = movie_id
+        self.title = title
+        self.user_ratings = {}
 
     def get_users(self, users: dict[int, User]) -> list[User]:
         """Return a list of users that have rated this movie
@@ -85,3 +88,7 @@ class Graph:
     """
     movies: dict[int, Movie]
     users: dict[int, User]
+
+    def __init__(self):
+        self.movies = {}
+        self.users = {}
