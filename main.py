@@ -92,8 +92,32 @@ def process_movie_recommends(graph: Graph) -> None:
     Idea:
     - multiply the score each compatible user gives by its comapt rating to the desired user
     """
-    # TODO
-    pass
+    for user in graph.get_all_users():  # loops through all users
+        recommendation_list = []
+        compat_list = sorted(user.user_compats.items(), key=lambda x: x[1], reverse=True)
+        for compat in compat_list:
+            uid = compat[0]
+            comp_score = compat[1]
+            compat_user = _find_or_add_user(graph, uid)
+            score_list = _get_recommendation_scores(comp_score, compat_user.movie_ratings)
+            recommendation_list.extend(score_list)
+        sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
+        final_list = [x[0] for x in sorted_tuples]
+        user.recommendations = final_list
+
+
+def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float]) -> list[(int, float)]:
+    """
+    Given the user rating between a user and its compatible user, and the movie_dict of that compatible user, calculate
+    the recommendation scores for each movie in the movie_dict by multiplying the ratings in the dict by the given user
+    rating. Return a list of tuples containing the movie ID and its recommendation score.
+    """
+    rec_list = []
+    for k in movie_ratings:
+        rating_value = movie_ratings[k]
+        rec_score = rating_value * comp_score
+        rec_list.append((k, rec_score))
+    return rec_list
 
 
 def add_rating(graph: Graph, user: User, movie_id: int, rating: float) -> None:
@@ -129,8 +153,5 @@ if __name__ == '__main__':
     start = timer()
     process_compat_users(movie_user_graph)
     print(f'process_compat_users time: {timer() - start}')
-
-    print(f'# Users: {len(movie_user_graph._users)}')
-    print(f'# Movies: {len(movie_user_graph._movies)}')
-    # process_movie_recommends()
+    # process_movie_recommends(movie_user_graph)
     ui_main(movie_user_graph)
