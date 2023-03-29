@@ -79,7 +79,7 @@ class Movie:
     def get_users(self) -> list[int]:
         """Return a list of user ids for users that have rated this movie
         """
-        user_ids = [id for id in self.user_ratings]
+        user_ids = [i for i in self.user_ratings]
         return user_ids
 
 

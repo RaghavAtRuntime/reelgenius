@@ -8,7 +8,7 @@ def ui_main(graph: Graph):
     root = tk.Tk()
 
     from random import randint
-    user = graph.get_user(randint(1, 100))
+    user = graph.get_user(randint(1, 5))
     UserPage(root, graph, user)
 
     root.columnconfigure(1, weight=1)

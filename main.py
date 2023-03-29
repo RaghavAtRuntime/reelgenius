@@ -14,7 +14,7 @@ ratings_file = "data/ratings.csv"
 def import_movies(movie_file: str, graph: Graph) -> None:
     """Reads the movie_file and populates graph._movies
     """
-    with open(movie_file, 'r') as file:
+    with open(movie_file, 'r', encoding='utf8') as file:
         reader = csv.reader(file)
         next(reader)
         for row in reader:
@@ -52,15 +52,10 @@ def _find_or_add_user(graph: Graph, user_id: int):
 def process_compat_users(graph: Graph) -> None:
     """Finds compatible users for each user in graph, and then updates their user_compats attribute accordingly
     """
-    # for each user in userGraph
-    #     compatUserIds = getMovieUsers(user.getMovies())
-    # // add List as keys to Dict(might need conversion / typecast)
-    # userCompats.add(compatUserIds)
-    # TODO
     for user in graph.get_all_users():
         user_rated_movies = user.get_movies()
         compat_user_ids = get_movie_users(user_rated_movies, graph)
-        list(filter(user.user_id.__ne__, compat_user_ids))
+        compat_user_ids.remove(user.user_id)
         _process_compat_score(graph, user, compat_user_ids)
 
 
@@ -72,13 +67,6 @@ def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -
     - graph.user_exists(user.user_id)
     - all({graph.user_exists(id) for id in compat_user_ids})
     """
-
-    # TODO
-    # Idea: take the average of the differences in score between a user and its compat users
-    # A: 1.5 - 5.0 = 3.5
-    # B: 2.0 - 3.5 = 1.5
-    # (3.5 + 1.5) / 2 = 2.5
-    # 4.5 - 2.5 = 2.5 <- final score
     for user_id in compat_user_ids:
         user2 = graph.get_user(user_id)
         user1_movies = user.get_movies()
@@ -90,12 +78,16 @@ def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -
             user2_rating = user2.get_rating(movie_id)
             compat_score_so_far += abs(user1_rating - user2_rating)
         compat_score_so_far = compat_score_so_far / len(shared_movies)
+        compat_score_so_far = 5.0 - compat_score_so_far
         user.user_compats[user_id] = compat_score_so_far
 
 
-def process_movie_recommends(graph: Graph, n: int) -> None:
+def process_movie_recommends(graph: Graph) -> None:
     """Generates a list of n movie reccommendations for each user in grpah and updates their recommended attribute
     accordingly
+
+    Idea:
+    - multiply the score each compatible user gives by its comapt rating to the desired user
     """
     # TODO
     pass
@@ -113,19 +105,17 @@ def add_rating(graph: Graph, user: User, movie_id: int, rating: float) -> None:
 def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
     """Returns a set of ids for users in graph who have a rating for at least one movie whose id is in movies
     """
-
-    # return userSet
     user_ids_so_far = []
     for movie_id in movies:
         user_ids_so_far.extend(graph.get_movie(movie_id).get_users())
     return set(user_ids_so_far)
 
 
-# if __name__ == '__main__':
-    # from ui import ui_main
-    #
-    # import_movies(movies_file, movie_user_graph)
-    # import_ratings(ratings_file, movie_user_graph)
-    # process_compat_users(movie_user_graph)
-    # # process_movie_recommends()
-    # ui_main(movie_user_graph)
+if __name__ == '__main__':
+
+    from ui import ui_main
+    import_movies(movies_file, movie_user_graph)
+    import_ratings(ratings_file, movie_user_graph)
+    process_compat_users(movie_user_graph)
+    # process_movie_recommends()
+    ui_main(movie_user_graph)
