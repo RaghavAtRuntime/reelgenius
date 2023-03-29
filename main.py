@@ -60,7 +60,7 @@ def process_compat_users(graph: Graph) -> None:
     for user in graph.get_all_users():
         user_rated_movies = user.get_movies()
         compat_user_ids = get_movie_users(user_rated_movies, graph)
-        compat_user_ids.remove(user.user_id)
+        list(filter(user.user_id.__ne__, compat_user_ids))
         _process_compat_score(graph, user, compat_user_ids)
 
 
