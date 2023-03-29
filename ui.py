@@ -40,7 +40,7 @@ class UserPage(tk.Frame):
         ttk.Button(self, command=self._search, text="Search User").grid(row=0, column=2)
 
         # Row 1
-        ttk.Label(self, text=f"User: {user.user_id}", font=("Helvetica", 20), padding=10).grid(row=1, column=0)
+        ttk.Label(self, text=f"User {user.user_id}", font=("Helvetica", 20), padding=10).grid(row=1, column=0)
 
         # Tabs
         notebook = ttk.Notebook(self)
@@ -89,7 +89,7 @@ class RecommendationsFrame(ttk.Frame):
         #     star_value = "★" + str(value)
         #     tree.insert('', 'end', text=key, values=(key, star_value))
         for movie_id in user.recommendations:
-            movie = graph.movies[movie_id]
+            movie = graph.get_movie(movie_id)
             cell_1 = movie.title
             cell_2 = '★' + str(movie.user_ratings[user.user_id])
             tree.insert('', 'end', text=cell_1, values=(cell_1, cell_2))
