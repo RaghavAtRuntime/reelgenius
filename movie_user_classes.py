@@ -15,7 +15,7 @@ class User:
         A mapping containing compatible users. Each key is a user id, and each value is the compatibility score for the
         user
     - recommendations:
-        A list of recommended movies for the user
+        A list of recommended movies sorted by their recommendation score
 
     Representation Invariants:
     - self.user_id > 0
