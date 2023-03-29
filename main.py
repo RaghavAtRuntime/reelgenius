@@ -7,8 +7,8 @@ from movie_user_classes import Graph
 import csv
 
 movie_user_graph = Graph()
-movies_file = "data/movies.csv"
-ratings_file = "data/ratings.csv"
+movies_file = "data/movies_small.csv"
+ratings_file = "data/ratings_small.csv"
 
 
 def import_movies(movie_file: str, graph: Graph) -> None:
@@ -52,11 +52,14 @@ def _find_or_add_user(graph: Graph, user_id: int):
 def process_compat_users(graph: Graph) -> None:
     """Finds compatible users for each user in graph, and then updates their user_compats attribute accordingly
     """
+    total_compat_users = 0
     for user in graph.get_all_users():
         user_rated_movies = user.get_movies()
         compat_user_ids = get_movie_users(user_rated_movies, graph)
         compat_user_ids.remove(user.user_id)
+        total_compat_users += len(compat_user_ids)
         _process_compat_score(graph, user, compat_user_ids)
+    print(f'total compat users: {total_compat_users}')
 
 
 def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -> None:
@@ -112,10 +115,22 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 
 if __name__ == '__main__':
-
+    from timeit import default_timer as timer
     from ui import ui_main
+
+    start = timer()
     import_movies(movies_file, movie_user_graph)
+    print(f'import_movies time: {timer() - start}')
+
+    start = timer()
     import_ratings(ratings_file, movie_user_graph)
+    print(f'import_ratings time: {timer() - start}')
+
+    start = timer()
     process_compat_users(movie_user_graph)
+    print(f'process_compat_users time: {timer() - start}')
+
+    print(f'# Users: {len(movie_user_graph._users)}')
+    print(f'# Movies: {len(movie_user_graph._movies)}')
     # process_movie_recommends()
     ui_main(movie_user_graph)
