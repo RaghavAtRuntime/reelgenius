@@ -128,3 +128,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/workspace.xml
+__pycache__/movie_user_classes.cpython-311.pyc
