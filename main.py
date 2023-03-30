@@ -103,7 +103,18 @@ def process_movie_recommends(graph: Graph) -> None:
             recommendation_list.extend(score_list)
         sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
         final_list = [x[0] for x in sorted_tuples]
-        user.recommendations = final_list
+        user.recommendations = _remove_duplicates(final_list)
+
+
+def _remove_duplicates(lst: list[str]) -> list[str]:
+    """Remove duplicates from a list, but keep the first occurrence of each item."""
+    seen = set()
+    result = []
+    for item in lst:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
 
 
 def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float]) -> list[(int, float)]:
@@ -153,5 +164,5 @@ if __name__ == '__main__':
     start = timer()
     process_compat_users(movie_user_graph)
     print(f'process_compat_users time: {timer() - start}')
-    # process_movie_recommends(movie_user_graph)
+    process_movie_recommends(movie_user_graph)
     ui_main(movie_user_graph)
