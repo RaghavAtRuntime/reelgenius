@@ -1,5 +1,7 @@
 # Movie and User Classes
 from __future__ import annotations
+import doctest
+import python_ta
 
 
 class User:
@@ -26,7 +28,7 @@ class User:
     user_compats: dict[int, float]
     recommendations: list[int]
 
-    def __init__(self, user_id: int):
+    def __init__(self, user_id: int) -> None:
         """Initialize this user with the given user_id, and with empty movie_ratings,
         user_compats, and recommendations"""
         self.user_id = user_id
@@ -37,10 +39,9 @@ class User:
     def get_movies(self) -> set[int]:
         """Return a set of movie ids for movies this user has rated
         """
-        movie_ids = {i for i in self.movie_ratings}
-        return movie_ids
+        return set(self.movie_ratings)
 
-    def get_rating(self, movie_id) -> float:
+    def get_rating(self, movie_id: int) -> float:
         """ Return the score this user gave for the movie with id == movie_id
 
         Preconditions:
@@ -69,7 +70,7 @@ class Movie:
     title: str
     user_ratings: dict[int, float]
 
-    def __init__(self, movie_id: int, title: str):
+    def __init__(self, movie_id: int, title: str) -> None:
         """Initialize the given movie with the given movie_id and title, and with empty user_ratings
         """
         self.movie_id = movie_id
@@ -77,10 +78,9 @@ class Movie:
         self.user_ratings = {}
 
     def get_users(self) -> list[int]:
-        """Return a list of user ids for users that have rated this movie
+        """Return a set of user ids for users that have rated this movie
         """
-        user_ids = [i for i in self.user_ratings]
-        return user_ids
+        return list(self.user_ratings)
 
 
 class Graph:
@@ -95,7 +95,7 @@ class Graph:
     _movies: dict[int, Movie]
     _users: dict[int, User]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._movies = {}
         self._users = {}
 
@@ -108,7 +108,8 @@ class Graph:
         return users_so_far
 
     def add_movie(self, movie: Movie) -> None:
-        """ Adds movie to self._movies
+        """ Adds movie to self._movies. If movie.movie_id is already a key in self._movies, the object stored at that
+        key is replaced by movie instead.
         """
         self._movies[movie.movie_id] = movie
 
@@ -137,3 +138,12 @@ class Graph:
         """ Returns whether the user with id == user_id is in this graph
         """
         return user_id in self._users
+
+
+if __name__ == '__main__':
+    doctest.testmod()
+    python_ta.check_all(config={
+        'extra-imports': ['__future__', 'doctest'],
+        'allowed-io': [],
+        'max-line-length': 120
+    })

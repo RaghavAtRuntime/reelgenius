@@ -3,6 +3,9 @@ from tkinter import ttk
 
 from movie_user_classes import *
 
+import doctest
+import python_ta
+
 
 def ui_main(graph: Graph):
     root = tk.Tk()
@@ -160,3 +163,12 @@ class CompatibleUsersFrame(ttk.Frame):
 
         tree.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=tree.yview)
+
+
+if __name__ == '__main__':
+    doctest.testmod()
+    python_ta.check_all(config={
+        'extra-imports': ['tkinter', 'movie_user_classes', 'doctest', 'random'],
+        'allowed-io': [],
+        'max-line-length': 120
+    })
