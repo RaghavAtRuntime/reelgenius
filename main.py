@@ -9,13 +9,10 @@ import csv
 from timeit import default_timer as timer
 from ui import ui_main
 
-movie_user_graph = Graph()
-movies_file = "data/movies.csv"
-ratings_file = "data/ratings.csv"
-
 MAX_RECOMMENDS = 10
 MIN_COMPAT_SCORE = 4
 MIN_RATING_SCORE = 4
+
 
 def import_movies(movie_file: str, graph: Graph) -> None:
     """Reads the movie_file and populates graph._movies
@@ -174,6 +171,9 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 
 if __name__ == '__main__':
+    movie_user_graph = Graph()
+    movies_file = "data/movies.csv"
+    ratings_file = "data/ratings.csv"
 
     def load():
         start = timer()
