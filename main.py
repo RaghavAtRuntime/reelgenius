@@ -1,10 +1,13 @@
 # Main File
 
-# import numpy as np
+
 from movie_user_classes import User
 from movie_user_classes import Movie
 from movie_user_classes import Graph
 import csv
+
+from timeit import default_timer as timer
+from ui import ui_main
 
 movie_user_graph = Graph()
 movies_file = "data/movies_small.csv"
@@ -59,7 +62,6 @@ def process_compat_users(graph: Graph) -> None:
         compat_user_ids.remove(user.user_id)
         total_compat_users += len(compat_user_ids)
         _process_compat_score(graph, user, compat_user_ids)
-    print(f'total compat users: {total_compat_users}')
 
 
 def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -> None:
@@ -142,6 +144,9 @@ def add_rating(graph: Graph, user: User, movie_id: int, rating: float) -> None:
 
 def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
     """Returns a set of ids for users in graph who have a rating for at least one movie whose id is in movies
+
+    Preconditions:
+    - all({i in graph._movies for i in movies})
     """
     user_ids_so_far = []
     for movie_id in movies:
@@ -150,8 +155,6 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 
 if __name__ == '__main__':
-    from timeit import default_timer as timer
-    from ui import ui_main
 
     start = timer()
     import_movies(movies_file, movie_user_graph)
