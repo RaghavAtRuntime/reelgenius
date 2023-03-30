@@ -10,8 +10,8 @@ from timeit import default_timer as timer
 from ui import ui_main
 
 movie_user_graph = Graph()
-movies_file = "data/movies_small.csv"
-ratings_file = "data/ratings_small.csv"
+movies_file = "data/movies.csv"
+ratings_file = "data/ratings.csv"
 
 
 def import_movies(movie_file: str, graph: Graph) -> None:
@@ -158,16 +158,18 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 if __name__ == '__main__':
 
-    start = timer()
-    import_movies(movies_file, movie_user_graph)
-    print(f'import_movies time: {timer() - start}')
+    def load():
+        start = timer()
+        import_movies(movies_file, movie_user_graph)
+        print(f'import_movies time: {timer() - start}')
 
-    start = timer()
-    import_ratings(ratings_file, movie_user_graph)
-    print(f'import_ratings time: {timer() - start}')
+        start = timer()
+        import_ratings(ratings_file, movie_user_graph)
+        print(f'import_ratings time: {timer() - start}')
 
-    start = timer()
-    process_compat_users(movie_user_graph)
-    print(f'process_compat_users time: {timer() - start}')
-    process_movie_recommends(movie_user_graph)
-    ui_main(movie_user_graph)
+        start = timer()
+        process_compat_users(movie_user_graph)
+        print(f'process_compat_users time: {timer() - start}')
+        process_movie_recommends(movie_user_graph)
+
+    ui_main(movie_user_graph, load_fn=load)

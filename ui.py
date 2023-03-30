@@ -7,19 +7,36 @@ import doctest
 import python_ta
 
 
-def ui_main(graph: Graph):
+def ui_main(graph: Graph, load_fn: lambda _: _):
     root = tk.Tk()
 
-    from random import randint
-    user = graph.get_user(randint(1, 5))
-    UserPage(root, graph, user)
-
+    # Loading page
+    loading_page = LoadingPage(root)
     root.columnconfigure(1, weight=1)
     root.rowconfigure(1, weight=1)
     root.resizable(False, False)
+    root.title("Loading...")
+    root.update()
+    load_fn()
+    loading_page.destroy()
+
+    # User page
+    from random import randint
+    user = graph.get_user(randint(1, 5))
+    UserPage(root, graph, user)
     root.title("ReelGenius")
     root.mainloop()
 
+
+class LoadingPage(tk.Frame):
+    """ Page with loading progress indicator
+    """
+
+    def __init__(self, root: tk.Tk):
+        tk.Frame.__init__(self, root)
+
+        #ttk.Label(root, text="Loading...")
+        #self.pack(fill=tk.BOTH, expand=True)
 
 class UserPage(tk.Frame):
     """ Page displaying the graph data for a user
@@ -42,8 +59,14 @@ class UserPage(tk.Frame):
         self._searchEntry.grid(row=0, column=1)
         ttk.Button(self, command=self._search, text="Search User").grid(row=0, column=2)
 
-        # Row 1
+        # User id
         ttk.Label(self, text=f"User {user.user_id}", font=("Helvetica", 20), padding=10).grid(row=1, column=0)
+
+        # Counts
+        count_str = f"Recommendations: {len(user.recommendations)}" \
+                    f",  My Ratings: {len(user.movie_ratings)}" \
+                    f",  Compatible Users: {len(user.user_compats)}"
+        ttk.Label(self, text=count_str, font=("Helvetica", 12)).grid(row=2, column=0, columnspan=3)
 
         # Tabs
         notebook = ttk.Notebook(self)
@@ -51,7 +74,7 @@ class UserPage(tk.Frame):
         notebook.add(MyRatingsFrame(notebook, graph, user), text="My Ratings")
         notebook.add(CompatibleUsersFrame(notebook, graph, user), text="Compatible Users")
         # notebook.pack(fill=tk.BOTH, expand=True)
-        notebook.grid(row=2, column=0, columnspan=3, sticky='nwes')
+        notebook.grid(row=3, column=0, columnspan=3, sticky='nwes')
 
         self.pack(fill=tk.BOTH, expand=True)
 
@@ -86,15 +109,15 @@ class RecommendationsFrame(ttk.Frame):
         tree.column("# 1", anchor=tk.CENTER)
         tree.heading("# 1", text="Title")
         tree.column("# 2", anchor=tk.CENTER)
-        tree.heading("# 2", text="Rating")
+        tree.heading("# 2", text="Rank")
 
         # for key, value in {x for x in sorted(data.items(), key=lambda item: item[1])}:
         #     star_value = "★" + str(value)
         #     tree.insert('', 'end', text=key, values=(key, star_value))
-        for movie_id in user.recommendations:
+        for i, movie_id in enumerate(user.recommendations):
             movie = graph.get_movie(movie_id)
             cell_1 = movie.title
-            cell_2 = '★' + str(movie.user_ratings[user.user_id])
+            cell_2 = str(i+1)
             tree.insert('', 'end', text=cell_1, values=(cell_1, cell_2))
         tree.pack()
 
@@ -157,7 +180,7 @@ class CompatibleUsersFrame(ttk.Frame):
         #     tree.insert('', 'end', text=key, values=(key, num_value))
         for user_id, score in user.user_compats.items():
             cell_1 = 'User ' + str(user_id)
-            cell_2 = str(score)
+            cell_2 = "{:.2f}".format(score)
             tree.insert('', 'end', text=cell_1, values=(cell_1, cell_2))
         tree.pack()
 
