@@ -86,7 +86,7 @@ def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -
             user2_rating = user2.get_rating(movie_id)
             compat_score_so_far += abs(user1_rating - user2_rating)
         compat_score_so_far = compat_score_so_far / len(shared_movies)
-        compat_score_so_far = 4.5 - compat_score_so_far
+        compat_score_so_far = 5.0 - compat_score_so_far
         user.user_compats[user_id] = compat_score_so_far
 
 
