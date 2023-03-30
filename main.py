@@ -105,7 +105,11 @@ def process_movie_recommends(graph: Graph) -> None:
             recommendation_list.extend(score_list)
         sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
         final_list = [x[0] for x in sorted_tuples]
-        user.recommendations = _remove_duplicates(final_list)
+        unique_list = _remove_duplicates(final_list)
+        if len(unique_list) > 10:
+            user.recommendations = unique_list[:10]
+        else:
+            user.recommendations = unique_list
 
 
 def _remove_duplicates(lst: list[str]) -> list[str]:
@@ -116,8 +120,6 @@ def _remove_duplicates(lst: list[str]) -> list[str]:
         if item not in seen:
             seen.add(item)
             result.append(item)
-            if len(result) == 10:
-                break
     return result
 
 
