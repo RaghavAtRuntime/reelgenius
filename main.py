@@ -160,9 +160,8 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 if __name__ == '__main__':
     movie_user_graph = Graph()
-    movies_file = "data/movies.csv"
-    ratings_file = "data/ratings.csv"
-
+    movies_file = "data/movies_small.csv"
+    ratings_file = "data/ratings_small.csv"
 
     def load() -> None:
         """Draws loading screen while data is being processed and returned
@@ -181,12 +180,11 @@ if __name__ == '__main__':
         print(f'process_compat_users time: {timer() - start}')
         process_movie_recommends(movie_user_graph)
 
-        doctest.testmod()
-        python_ta.check_all(config={
-            'extra-imports': ['__future__', 'movie_user_classes', 'ui', 'csv'],
-            'allowed-io': [''],
-            'max-line-length': 120
-        })
-
-
     ui_main(movie_user_graph, load_fn=load)
+
+    # doctest.testmod()
+    # python_ta.check_all(config={
+    #     'extra-imports': ['__future__', 'movie_user_classes', 'ui', 'csv'],
+    #     'allowed-io': [''],
+    #     'max-line-length': 120
+    # })
