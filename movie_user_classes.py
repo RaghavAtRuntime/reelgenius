@@ -83,63 +83,6 @@ class Movie:
         return list(self.user_ratings)
 
 
-class Graph:
-    """ A class to represent a graph
-
-    Instance Attributes:
-    - _movies:
-        A mapping of the movies stored in this graph. Each key is a movie id and each value is a Movie object
-    - _users:
-        A mapping of the users stored in this graph. Each key is a user id and each value is a User object
-    """
-    _movies: dict[int, Movie]
-    _users: dict[int, User]
-
-    def __init__(self) -> None:
-        self._movies = {}
-        self._users = {}
-
-    def get_all_users(self) -> list[User]:
-        """ Returns all users in this graph
-        """
-        users_so_far = []
-        for i in self._users:
-            users_so_far.append(self._users[i])
-        return users_so_far
-
-    def add_movie(self, movie: Movie) -> None:
-        """ Adds movie to self._movies. If movie.movie_id is already a key in self._movies, the object stored at that
-        key is replaced by movie instead.
-        """
-        self._movies[movie.movie_id] = movie
-
-    def add_user(self, user: User) -> None:
-        """ Adds user to self._users
-        """
-        self._users[user.user_id] = user
-
-    def get_movie(self, movie_id: int) -> Movie:
-        """ Returns the movie in this graph with id == movie_id
-
-        Preconditions:
-        - movie_id in self._movies
-        """
-        return self._movies[movie_id]
-
-    def get_user(self, user_id: int) -> User:
-        """ Returns the user in this graph with id == user_id
-
-        Preconditions:
-        - user_id in self._users
-        """
-        return self._users[user_id]
-
-    def user_exists(self, user_id: int) -> bool:
-        """ Returns whether the user with id == user_id is in this graph
-        """
-        return user_id in self._users
-
-
 if __name__ == '__main__':
     doctest.testmod()
     python_ta.check_all(config={

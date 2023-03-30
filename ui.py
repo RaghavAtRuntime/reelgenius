@@ -8,7 +8,8 @@ from random import randint
 import doctest
 import python_ta
 
-from movie_user_classes import Graph, User
+from graph import Graph
+from movie_user_classes import User
 
 
 def ui_main(graph: Graph, load_fn: lambda _: _) -> None:
