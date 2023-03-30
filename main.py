@@ -13,6 +13,9 @@ movie_user_graph = Graph()
 movies_file = "data/movies.csv"
 ratings_file = "data/ratings.csv"
 
+MAX_RECOMMENDS = 10
+MIN_COMPAT_SCORE = 4
+MIN_RATING_SCORE = 4
 
 def import_movies(movie_file: str, graph: Graph) -> None:
     """Reads the movie_file and populates graph._movies
@@ -83,7 +86,7 @@ def _process_compat_score(graph: Graph, user: User, compat_user_ids: set[int]) -
             user2_rating = user2.get_rating(movie_id)
             compat_score_so_far += abs(user1_rating - user2_rating)
         compat_score_so_far = compat_score_so_far / len(shared_movies)
-        compat_score_so_far = 5.0 - compat_score_so_far
+        compat_score_so_far = 4.5 - compat_score_so_far
         user.user_compats[user_id] = compat_score_so_far
 
 
@@ -100,12 +103,21 @@ def process_movie_recommends(graph: Graph) -> None:
         for compat in compat_list:
             uid = compat[0]
             comp_score = compat[1]
+
+            #temp
+            if(comp_score < MIN_COMPAT_SCORE):
+                continue
+
             compat_user = _find_or_add_user(graph, uid)
             score_list = _get_recommendation_scores(comp_score, compat_user.movie_ratings)
             recommendation_list.extend(score_list)
         sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
         final_list = [x[0] for x in sorted_tuples]
         user.recommendations = _remove_duplicates(final_list)
+
+        #temp
+        if(len(user.recommendations) < 10):
+            print(f'User: {user.user_id} recomendLen: {len(user.recommendations)}')
 
 
 def _remove_duplicates(lst: list[str]) -> list[str]:
@@ -116,7 +128,7 @@ def _remove_duplicates(lst: list[str]) -> list[str]:
         if item not in seen:
             seen.add(item)
             result.append(item)
-            if len(result) == 10:
+            if len(result) == MAX_RECOMMENDS:
                 break
     return result
 
@@ -130,6 +142,11 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
     rec_list = []
     for k in movie_ratings:
         rating_value = movie_ratings[k]
+
+        # temp
+        if (rating_value < MIN_RATING_SCORE):
+            continue
+
         rec_score = rating_value * comp_score
         rec_list.append((k, rec_score))
     return rec_list
@@ -170,6 +187,9 @@ if __name__ == '__main__':
         start = timer()
         process_compat_users(movie_user_graph)
         print(f'process_compat_users time: {timer() - start}')
+
+        start = timer()
         process_movie_recommends(movie_user_graph)
+        print(f'process_movie_recommends time: {timer() - start}')
 
     ui_main(movie_user_graph, load_fn=load)
