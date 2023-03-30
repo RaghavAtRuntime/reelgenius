@@ -1,17 +1,17 @@
+"""
+Main file containing core functions.
+mainly focused around passing values to the UI and initializing our Graph and nodes
+"""
 # Main File
-
+import csv
+from timeit import default_timer as timer
+import doctest
+import python_ta
 
 from movie_user_classes import User
 from movie_user_classes import Movie
 from movie_user_classes import Graph
-import csv
-
-from timeit import default_timer as timer
 from ui import ui_main
-
-movie_user_graph = Graph()
-movies_file = "data/movies.csv"
-ratings_file = "data/ratings.csv"
 
 
 def import_movies(movie_file: str, graph: Graph) -> None:
@@ -43,7 +43,7 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             add_rating(graph, curr_user, movie_id, rating)
 
 
-def _find_or_add_user(graph: Graph, user_id: int):
+def _find_or_add_user(graph: Graph, user_id: int) -> User:
     """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
     instead creates a new user with user_id = id, adds it to graph.users, and returns that user
     """
@@ -159,8 +159,15 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 
 if __name__ == '__main__':
+    movie_user_graph = Graph()
+    movies_file = "data/movies.csv"
+    ratings_file = "data/ratings.csv"
 
-    def load():
+
+    def load() -> None:
+        """Draws loading screen while data is being processed and returned
+
+        """
         start = timer()
         import_movies(movies_file, movie_user_graph)
         print(f'import_movies time: {timer() - start}')
@@ -173,5 +180,13 @@ if __name__ == '__main__':
         process_compat_users(movie_user_graph)
         print(f'process_compat_users time: {timer() - start}')
         process_movie_recommends(movie_user_graph)
+
+        doctest.testmod()
+        python_ta.check_all(config={
+            'extra-imports': ['__future__', 'movie_user_classes', 'ui', 'csv'],
+            'allowed-io': [''],
+            'max-line-length': 120
+        })
+
 
     ui_main(movie_user_graph, load_fn=load)
