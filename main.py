@@ -1,17 +1,17 @@
-"""
-Main file containing core functions.
-mainly focused around passing values to the UI and initializing our Graph and nodes
-"""
 # Main File
-import csv
-from timeit import default_timer as timer
-import doctest
-import python_ta
+
 
 from movie_user_classes import User
 from movie_user_classes import Movie
 from movie_user_classes import Graph
+import csv
+
+from timeit import default_timer as timer
 from ui import ui_main
+
+MAX_RECOMMENDS = 10
+MIN_COMPAT_SCORE = 4
+MIN_RATING_SCORE = 4
 
 
 def import_movies(movie_file: str, graph: Graph) -> None:
@@ -43,7 +43,7 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             add_rating(graph, curr_user, movie_id, rating)
 
 
-def _find_or_add_user(graph: Graph, user_id: int) -> User:
+def _find_or_add_user(graph: Graph, user_id: int):
     """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
     instead creates a new user with user_id = id, adds it to graph.users, and returns that user
     """
@@ -100,16 +100,21 @@ def process_movie_recommends(graph: Graph) -> None:
         for compat in compat_list:
             uid = compat[0]
             comp_score = compat[1]
+
+            #temp
+            if(comp_score < MIN_COMPAT_SCORE):
+                continue
+
             compat_user = _find_or_add_user(graph, uid)
             score_list = _get_recommendation_scores(comp_score, compat_user.movie_ratings)
             recommendation_list.extend(score_list)
         sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
         final_list = [x[0] for x in sorted_tuples]
-        unique_list = _remove_duplicates(final_list)
-        if len(unique_list) > 10:
-            user.recommendations = unique_list[:10]
-        else:
-            user.recommendations = unique_list
+        user.recommendations = _remove_duplicates(final_list)
+
+        #temp
+        if(len(user.recommendations) < 10):
+            print(f'User: {user.user_id} recomendLen: {len(user.recommendations)}')
 
 
 def _remove_duplicates(lst: list[str]) -> list[str]:
@@ -120,6 +125,8 @@ def _remove_duplicates(lst: list[str]) -> list[str]:
         if item not in seen:
             seen.add(item)
             result.append(item)
+            if len(result) == MAX_RECOMMENDS:
+                break
     return result
 
 
@@ -132,6 +139,11 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
     rec_list = []
     for k in movie_ratings:
         rating_value = movie_ratings[k]
+
+        # temp
+        if (rating_value < MIN_RATING_SCORE):
+            continue
+
         rec_score = rating_value * comp_score
         rec_list.append((k, rec_score))
     return rec_list
@@ -160,13 +172,10 @@ def get_movie_users(movies: set[int], graph: Graph) -> set[int]:
 
 if __name__ == '__main__':
     movie_user_graph = Graph()
-    movies_file = "data/movies_small.csv"
-    ratings_file = "data/ratings_small.csv"
+    movies_file = "data/movies.csv"
+    ratings_file = "data/ratings.csv"
 
-    def load() -> None:
-        """Draws loading screen while data is being processed and returned
-
-        """
+    def load():
         start = timer()
         import_movies(movies_file, movie_user_graph)
         print(f'import_movies time: {timer() - start}')
@@ -178,13 +187,9 @@ if __name__ == '__main__':
         start = timer()
         process_compat_users(movie_user_graph)
         print(f'process_compat_users time: {timer() - start}')
+
+        start = timer()
         process_movie_recommends(movie_user_graph)
+        print(f'process_movie_recommends time: {timer() - start}')
 
     ui_main(movie_user_graph, load_fn=load)
-
-    # doctest.testmod()
-    # python_ta.check_all(config={
-    #     'extra-imports': ['__future__', 'movie_user_classes', 'ui', 'csv'],
-    #     'allowed-io': [''],
-    #     'max-line-length': 120
-    # })
