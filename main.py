@@ -116,6 +116,8 @@ def _remove_duplicates(lst: list[str]) -> list[str]:
         if item not in seen:
             seen.add(item)
             result.append(item)
+            if len(result) == 10:
+                break
     return result
 
 
