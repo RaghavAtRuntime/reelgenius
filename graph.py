@@ -23,19 +23,17 @@ class Graph:
     def get_all_users(self) -> list[User]:
         """ Returns all users in this graph
         """
-        users_so_far = []
-        for i in self._users:
-            users_so_far.append(self._users[i])
-        return users_so_far
+        return list(self._users.values())
 
     def add_movie(self, movie: Movie) -> None:
-        """ Adds movie to self._movies. If movie.movie_id is already a key in self._movies, the object stored at that
+        """ Adds movie to self._movies. If movie.movie_id is already a key in self._movies, the value stored at that
         key is replaced by movie instead.
         """
         self._movies[movie.movie_id] = movie
 
     def add_user(self, user: User) -> None:
-        """ Adds user to self._users
+        """ Adds user to self._users. If user.user_id is already a key in self._users, the value stored at that key
+        is replaced by user instead.
         """
         self._users[user.user_id] = user
 
@@ -61,7 +59,8 @@ class Graph:
         return user_id in self._users
 
     def process_compat_users(self) -> None:
-        """Finds compatible users for each user in graph, and then updates their user_compats attribute accordingly
+        """Finds compatible users for each user in graph, calculates their compatability score as outlined in the
+        written report, and then updates their user_compats attribute accordingly.
         """
         total_compat_users = 0
         for user in self.get_all_users():
@@ -93,12 +92,15 @@ class Graph:
             compat_score_so_far = 5.0 - compat_score_so_far
             user.user_compats[user_id] = compat_score_so_far
 
-    def process_movie_recommends(self) -> None:
-        """Generates a list of n movie reccommendations for each user in grpah and updates their recommended attribute
+    def process_movie_recommends(self, min_score: float, min_rating: float, recommends_length: int) -> None:
+        """Generates a list of recommends_length movie reccommendations for each user in graph, using the strategy
+        outlined in the written report and updates their recommended attribute
         accordingly
 
-        Idea:
-        - multiply the score each compatible user gives by its comapt rating to the desired user
+        Preconditions:
+        - min_rating <= 5.0
+        - min_score <= 5.0
+        - recommends_length > 0
         """
         for user in self.get_all_users():  # loops through all users
             recommendation_list = []
@@ -106,14 +108,18 @@ class Graph:
             for compat in compat_list:
                 uid = compat[0]
                 comp_score = compat[1]
+
+                if comp_score < min_score:
+                    continue
+
                 compat_user = self.find_or_add_user(uid)
-                score_list = _get_recommendation_scores(comp_score, compat_user.movie_ratings)
+                score_list = _get_recommendation_scores(comp_score, compat_user.movie_ratings, min_rating)
                 recommendation_list.extend(score_list)
             sorted_tuples = sorted(recommendation_list, key=lambda x: x[1], reverse=True)
             final_list = [x[0] for x in sorted_tuples]
             unique_list = _remove_duplicates(final_list)
-            if len(unique_list) > 10:
-                user.recommendations = unique_list[:10]
+            if len(unique_list) > recommends_length:
+                user.recommendations = unique_list[:recommends_length]
             else:
                 user.recommendations = unique_list
 
@@ -156,7 +162,8 @@ def _remove_duplicates(lst: list[str]) -> list[str]:
     return result
 
 
-def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float]) -> list[(int, float)]:
+def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float], min_rating: float)\
+        -> list[(int, float)]:
     """
     Given the user rating between a user and its compatible user, and the movie_dict of that compatible user, calculate
     the recommendation scores for each movie in the movie_dict by multiplying the ratings in the dict by the given user
@@ -165,6 +172,10 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
     rec_list = []
     for k in movie_ratings:
         rating_value = movie_ratings[k]
+
+        if rating_value < min_rating:
+            continue
+
         rec_score = rating_value * comp_score
         rec_list.append((k, rec_score))
     return rec_list
