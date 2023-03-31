@@ -39,7 +39,7 @@ class LoadingPage(tk.Frame):
     """
 
     def __init__(self, root: tk.Tk) -> None:
-        tk.Frame.__init__(self, root)
+        tk.Frame.__init__(self, root, width=100)
 
 
 class UserPage(tk.Frame):
@@ -82,11 +82,15 @@ class UserPage(tk.Frame):
         self.pack(fill=tk.BOTH, expand=True)
 
     def _user_link(self, user_id: int) -> None:
+        """ Reloads the page with the data for a different user
+        """
         if self._graph.user_exists(user_id):
             self._user = self._graph.get_user(user_id)
             self._reload()
 
     def _search(self) -> None:
+        """ Parses the search bar and links to the user id
+        """
         entry_str = self._search_entry.get()
         self._search_entry.delete(0, tk.END)
         if entry_str.isdigit():
@@ -94,6 +98,8 @@ class UserPage(tk.Frame):
             self._user_link(new_user_id)
 
     def _reload(self) -> None:
+        """ Reloads the page
+        """
         self.destroy()
         self._root.update()
         self.__init__(self._root, self._graph, self._user)
@@ -183,7 +189,7 @@ class CompatibleUsersFrame(ttk.Frame):
         tree.pack()
 
         # Clickable user links
-        def tree_press(event) -> None:
+        def tree_press(_: tk.Event) -> None:
             input_id = tree.selection()
             selected_user_id = int(tree.item(input_id, 'tags')[0])
             user_link_fn(selected_user_id)
@@ -197,7 +203,7 @@ class CompatibleUsersFrame(ttk.Frame):
 if __name__ == '__main__':
     doctest.testmod()
     python_ta.check_all(config={
-        'extra-imports': ['tkinter', 'movie_user_classes', 'doctest', 'random'],
+        'extra-imports': ['tkinter', 'movie_user_classes', 'graph', 'doctest', 'random'],
         'allowed-io': [],
         'max-line-length': 120
     })
