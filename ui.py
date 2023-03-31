@@ -1,13 +1,20 @@
+"""
+File containing main function/pages for graphical user interface
+"""
 import tkinter as tk
 from tkinter import ttk
-
-from movie_user_classes import *
+from random import randint
 
 import doctest
 import python_ta
 
+from graph import Graph
+from movie_user_classes import User
 
-def ui_main(graph: Graph, load_fn: lambda _: _):
+
+def ui_main(graph: Graph, load_fn: lambda _: _) -> None:
+    """ Starts UI and calls load_fn to load data for display
+    """
     root = tk.Tk()
 
     # Loading page
@@ -21,7 +28,6 @@ def ui_main(graph: Graph, load_fn: lambda _: _):
     loading_page.destroy()
 
     # User page
-    from random import randint
     user = graph.get_user(randint(1, 5))
     UserPage(root, graph, user)
     root.title("ReelGenius")
@@ -32,11 +38,9 @@ class LoadingPage(tk.Frame):
     """ Page with loading progress indicator
     """
 
-    def __init__(self, root: tk.Tk):
-        tk.Frame.__init__(self, root)
+    def __init__(self, root: tk.Tk) -> None:
+        tk.Frame.__init__(self, root, width=100)
 
-        #ttk.Label(root, text="Loading...")
-        #self.pack(fill=tk.BOTH, expand=True)
 
 class UserPage(tk.Frame):
     """ Page displaying the graph data for a user
@@ -44,9 +48,9 @@ class UserPage(tk.Frame):
     _root: tk.Tk
     _graph: Graph
     _user: User
-    _searchEntry: ttk.Entry
+    _search_entry: ttk.Entry
 
-    def __init__(self, root: tk.Tk, graph: Graph, user: User):
+    def __init__(self, root: tk.Tk, graph: Graph, user: User) -> None:
         self._root = root
         self._graph = graph
         self._user = user
@@ -54,40 +58,48 @@ class UserPage(tk.Frame):
         tk.Frame.__init__(self, root, padx=10, pady=10)
 
         # Row 0
-        ttk.Label(self, text="ReelGenius", font=("Helvetica", 15)).grid(row=0, column=0)
-        self._searchEntry = ttk.Entry(self)
-        self._searchEntry.grid(row=0, column=1)
+        ttk.Label(self, text="ReelGenius", font=(None, 15)).grid(row=0, column=0)
+        self._search_entry = ttk.Entry(self)
+        self._search_entry.grid(row=0, column=1)
         ttk.Button(self, command=self._search, text="Search User").grid(row=0, column=2)
 
         # User id
-        ttk.Label(self, text=f"User {user.user_id}", font=("Helvetica", 20), padding=10).grid(row=1, column=0)
+        ttk.Label(self, text=f"User {user.user_id}", font=(None, 20), padding=10).grid(row=1, column=0)
 
         # Counts
         count_str = f"Recommendations: {len(user.recommendations)}" \
                     f",  My Ratings: {len(user.movie_ratings)}" \
                     f",  Compatible Users: {len(user.user_compats)}"
-        ttk.Label(self, text=count_str, font=("Helvetica", 12)).grid(row=2, column=0, columnspan=3)
+        ttk.Label(self, text=count_str, font=(None, 12)).grid(row=2, column=0, columnspan=3)
 
         # Tabs
         notebook = ttk.Notebook(self)
         notebook.add(RecommendationsFrame(notebook, graph, user), text="Recommendations")
         notebook.add(MyRatingsFrame(notebook, graph, user), text="My Ratings")
-        notebook.add(CompatibleUsersFrame(notebook, graph, user), text="Compatible Users")
-        # notebook.pack(fill=tk.BOTH, expand=True)
+        notebook.add(CompatibleUsersFrame(notebook, user, self._user_link), text="Compatible Users")
         notebook.grid(row=3, column=0, columnspan=3, sticky='nwes')
 
         self.pack(fill=tk.BOTH, expand=True)
 
-    def _search(self):
-        entry_str = self._searchEntry.get()
-        self._searchEntry.delete(0, tk.END)
+    def _user_link(self, user_id: int) -> None:
+        """ Reloads the page with the data for a different user
+        """
+        if self._graph.user_exists(user_id):
+            self._user = self._graph.get_user(user_id)
+            self._reload()
+
+    def _search(self) -> None:
+        """ Parses the search bar and links to the user id
+        """
+        entry_str = self._search_entry.get()
+        self._search_entry.delete(0, tk.END)
         if entry_str.isdigit():
             new_user_id = int(entry_str)
-            if self._graph.user_exists(new_user_id):
-                self._user = self._graph.get_user(new_user_id)
-                self._reload()
+            self._user_link(new_user_id)
 
-    def _reload(self):
+    def _reload(self) -> None:
+        """ Reloads the page
+        """
         self.destroy()
         self._root.update()
         self.__init__(self._root, self._graph, self._user)
@@ -97,7 +109,7 @@ class RecommendationsFrame(ttk.Frame):
     """ Frame displaying list of movie recommendations
     """
 
-    def __init__(self, notebook: ttk.Notebook, graph: Graph, user: User):
+    def __init__(self, notebook: ttk.Notebook, graph: Graph, user: User) -> None:
         ttk.Frame.__init__(self, notebook)
 
         # Scrollbar
@@ -111,13 +123,10 @@ class RecommendationsFrame(ttk.Frame):
         tree.column("# 2", anchor=tk.CENTER)
         tree.heading("# 2", text="Rank")
 
-        # for key, value in {x for x in sorted(data.items(), key=lambda item: item[1])}:
-        #     star_value = "★" + str(value)
-        #     tree.insert('', 'end', text=key, values=(key, star_value))
         for i, movie_id in enumerate(user.recommendations):
             movie = graph.get_movie(movie_id)
             cell_1 = movie.title
-            cell_2 = str(i+1)
+            cell_2 = str(i + 1)
             tree.insert('', 'end', text=cell_1, values=(cell_1, cell_2))
         tree.pack()
 
@@ -129,7 +138,7 @@ class MyRatingsFrame(ttk.Frame):
     """ Frame displaying list of movie ratings
     """
 
-    def __init__(self, notebook: ttk.Notebook, graph: Graph, user: User):
+    def __init__(self, notebook: ttk.Notebook, graph: Graph, user: User) -> None:
         ttk.Frame.__init__(self, notebook)
 
         # Scrollbar
@@ -143,9 +152,6 @@ class MyRatingsFrame(ttk.Frame):
         tree.column("# 2", anchor=tk.CENTER)
         tree.heading("# 2", text="Rating")
 
-        # for key, value in data.items():
-        #     star_value = "★" + str(value)
-        #     tree.insert('', 'end', text=key, values=(key, star_value))
         for movie_id, rating in user.movie_ratings.items():
             movie = graph.get_movie(movie_id)
             cell_1 = movie.title
@@ -161,7 +167,7 @@ class CompatibleUsersFrame(ttk.Frame):
     """ Frame displaying list of compatible users
     """
 
-    def __init__(self, notebook: ttk.Notebook, graph: Graph, user: User):
+    def __init__(self, notebook: ttk.Notebook, user: User, user_link_fn: lambda _: None) -> None:
         ttk.Frame.__init__(self, notebook)
 
         # Scrollbar
@@ -174,15 +180,21 @@ class CompatibleUsersFrame(ttk.Frame):
         tree.heading("# 1", text="User")
         tree.column("# 2", anchor=tk.CENTER)
         tree.heading("# 2", text="Score")
+        tree.tag_configure('link', foreground='blue', font=(None, 13, 'underline'))
 
-        # for key, value in data.items():
-        #     num_value = "#" + str(value)
-        #     tree.insert('', 'end', text=key, values=(key, num_value))
-        for user_id, score in user.user_compats.items():
+        for user_id, score in sorted(user.user_compats.items(), key=lambda x: x[1], reverse=True):
             cell_1 = 'User ' + str(user_id)
-            cell_2 = "{:.2f}".format(score)
-            tree.insert('', 'end', text=cell_1, values=(cell_1, cell_2))
+            cell_2 = f"{score:.2f}"
+            tree.insert('', 'end', tags=[user_id, 'link'], text=cell_1, values=(cell_1, cell_2))
         tree.pack()
+
+        # Clickable user links
+        def tree_press(_: tk.Event) -> None:
+            input_id = tree.selection()
+            selected_user_id = int(tree.item(input_id, 'tags')[0])
+            user_link_fn(selected_user_id)
+
+        tree.bind("<Double-1>", tree_press)
 
         tree.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=tree.yview)
@@ -191,7 +203,7 @@ class CompatibleUsersFrame(ttk.Frame):
 if __name__ == '__main__':
     doctest.testmod()
     python_ta.check_all(config={
-        'extra-imports': ['tkinter', 'movie_user_classes', 'doctest', 'random'],
+        'extra-imports': ['tkinter', 'movie_user_classes', 'graph', 'doctest', 'random'],
         'allowed-io': [],
         'max-line-length': 120
     })
