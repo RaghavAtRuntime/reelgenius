@@ -176,7 +176,7 @@ class CompatibleUsersFrame(ttk.Frame):
         tree.heading("# 2", text="Score")
         tree.tag_configure('link', foreground='blue', font=(None, 13, 'underline'))
 
-        for user_id, score in user.user_compats.items():
+        for user_id, score in sorted(user.user_compats.items(), key=lambda x: x[1], reverse=True):
             cell_1 = 'User ' + str(user_id)
             cell_2 = f"{score:.2f}"
             tree.insert('', 'end', tags=[user_id, 'link'], text=cell_1, values=(cell_1, cell_2))
