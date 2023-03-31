@@ -12,6 +12,10 @@ from ui import ui_main
 from read_data import import_movies, import_ratings
 from graph import Graph
 
+MIN_COMPAT_SCORE = 4.0
+MIN_RATING_SCORE = 4.0
+RECOMMENDATION_LENGTH = 12
+
 if __name__ == '__main__':
     movie_user_graph = Graph()
     movies_file = "data/movies.csv"
@@ -32,7 +36,10 @@ if __name__ == '__main__':
         start = timer()
         movie_user_graph.process_compat_users()
         print(f'process_compat_users time: {timer() - start}')
-        movie_user_graph.process_movie_recommends()
+
+        start = timer()
+        movie_user_graph.process_movie_recommends(MIN_COMPAT_SCORE, MIN_RATING_SCORE, RECOMMENDATION_LENGTH)
+        print(f'process_movie_recommends time: {timer() - start}')
 
     ui_main(movie_user_graph, load_fn=load)
 
