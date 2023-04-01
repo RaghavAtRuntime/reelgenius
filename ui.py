@@ -29,7 +29,7 @@ def ui_main(graph: Graph, load_fn: lambda _: _) -> None:
     loading_page.destroy()
 
     # User page
-    user = graph.get_user(randint(1, 5))
+    user = graph.get_user(randint(1, len(graph.get_all_users())-1))
     UserPage(root, graph, user)
     root.title("ReelGenius")
     root.mainloop()
