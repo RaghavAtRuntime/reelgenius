@@ -3,6 +3,8 @@
 This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
 import csv
+import doctest
+import python_ta
 
 from graph import Graph
 from movie_user_classes import Movie
@@ -39,3 +41,12 @@ def import_ratings(rating_file: str, graph: Graph) -> None:
             rating = float(row[2])
             curr_user = graph.find_or_add_user(curr_userid)  # Does our dict allocation for us
             graph.add_rating(curr_user, movie_id, rating)
+
+
+if __name__ == '__main__':
+    doctest.testmod()
+    python_ta.check_all(config={
+        'extra-imports': ['tkinter', 'movie_user_classes', 'graph', 'doctest', 'random', 'csv'],
+        'allowed-io': ['import_movies', 'import_ratings'],
+        'max-line-length': 120
+    })

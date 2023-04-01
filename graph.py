@@ -15,6 +15,10 @@ class Graph:
         A mapping of the movies stored in this graph. Each key is a movie id and each value is a Movie object
     - _users:
         A mapping of the users stored in this graph. Each key is a user id and each value is a User object
+
+    Representation Invariants:
+    - all({m == self._movies[m].movie_id for m in self._movies})
+    - all({u == self._users[u].user_id for u in self._users})
     """
     _movies: dict[int, Movie]
     _users: dict[int, User]
