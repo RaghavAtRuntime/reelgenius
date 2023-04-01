@@ -129,6 +129,9 @@ class Graph:
     def find_or_add_user(self, user_id: int) -> User:
         """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users,
         the function instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+
+        Preconditions:
+        - user_id > 1
         """
         if not self.user_exists(user_id):
             self.add_user(User(user_id))
@@ -137,6 +140,9 @@ class Graph:
     def add_rating(self, user: User, movie_id: int, rating: float) -> None:
         """Adds a rating with movie id and rating to the user's movie_ratings attribute
         and adds a user and its user rating to the movie's user_ratings attribute
+
+        Preconditions:
+        - 0.5 <= rating <= 5.0
         """
         user.movie_ratings[movie_id] = rating
         movie = self.get_movie(movie_id)
@@ -155,7 +161,7 @@ class Graph:
 
 
 def _remove_duplicates(lst: list[str]) -> list[str]:
-    """Remove duplicates from a list, but keep the first occurrence of each item."""
+    """Remove duplicates from lst, but keep the first occurrence of each item."""
     seen = set()
     result = []
     for item in lst:
@@ -171,6 +177,11 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
     Given the user rating between a user and its compatible user, and the movie_dict of that compatible user, calculate
     the recommendation scores for each movie in the movie_dict by multiplying the ratings in the dict by the given user
     rating. Return a list of tuples containing the movie ID and its recommendation score.
+
+    Preconditions:
+    - 0.5 <= comp_score <= 5.0
+    - min_rating <= 5.0
+    - all({0.5 <= movie_ratings[m] <= 5.0 for m in movie_ratings})
     """
     rec_list = []
     for k in movie_ratings:

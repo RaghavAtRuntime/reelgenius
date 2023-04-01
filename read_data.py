@@ -10,6 +10,9 @@ from movie_user_classes import Movie
 
 def import_movies(movie_file: str, graph: Graph) -> None:
     """Reads the movie_file and populates graph._movies
+
+    Preconditions:
+    - movie_file refers to a csv file with the format as described in the handout for "movies.csv"
     """
     with open(movie_file, 'r', encoding='utf8') as file:
         reader = csv.reader(file)
@@ -23,8 +26,9 @@ def import_movies(movie_file: str, graph: Graph) -> None:
 
 def import_ratings(rating_file: str, graph: Graph) -> None:
     """Reads the ratings_file and creates new users, populates graph._users and modifies Movie.ratings and User.ratings
+
     Preconditions:
-     - each entry in ratings_file is unique
+     - rating_file refers to a csv file with the format as described in the handout for "ratings.csv"
     """
     with open(rating_file, 'r') as file:
         reader = csv.reader(file)
