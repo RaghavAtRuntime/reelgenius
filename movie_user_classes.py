@@ -1,4 +1,8 @@
-# Movie and User Classes
+""" This Python module contains the User and Movies classes used in this project to represent a user and a movie
+in the datasets respectively.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
+"""
 from __future__ import annotations
 import doctest
 import python_ta

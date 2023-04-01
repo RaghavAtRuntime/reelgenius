@@ -1,6 +1,6 @@
-"""
-Main file containing core functions.
-mainly focused around passing values to the UI and initializing our Graph and nodes
+"""This Python module contains the Code used to run the project.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
 # Main File
 
@@ -14,7 +14,7 @@ from graph import Graph
 
 MIN_COMPAT_SCORE = 4.0
 MIN_RATING_SCORE = 4.0
-RECOMMENDATION_LENGTH = 12
+RECOMMENDATION_LENGTH = 10
 
 if __name__ == '__main__':
     movie_user_graph = Graph()
@@ -43,6 +43,7 @@ if __name__ == '__main__':
 
     ui_main(movie_user_graph, load_fn=load)
 
+    # Uncomment to check with python-ta
     # doctest.testmod()
     # python_ta.check_all(config={
     #     'extra-imports': ['__future__', 'movie_user_classes', 'ui', 'read_data', 'graph', 'csv'],

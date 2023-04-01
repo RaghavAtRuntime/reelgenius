@@ -1,11 +1,14 @@
+""" This Python module contains the Graph class used to represent the graph used in this project.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
-File containing the Graph class and functions to process graph data
-"""
+import doctest
+import python_ta
 from movie_user_classes import User, Movie
 
 
 class Graph:
-    """ A class to represent a graph
+    """ A class to represent a graph containing User and Movie objects.
 
     Instance Attributes:
     - _movies:
@@ -124,8 +127,8 @@ class Graph:
                 user.recommendations = unique_list
 
     def find_or_add_user(self, user_id: int) -> User:
-        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
-        instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users,
+        the function instead creates a new user with user_id = id, adds it to graph.users, and returns that user
         """
         if not self.user_exists(user_id):
             self.add_user(User(user_id))
@@ -179,3 +182,12 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
         rec_score = rating_value * comp_score
         rec_list.append((k, rec_score))
     return rec_list
+
+
+if __name__ == '__main__':
+    doctest.testmod()
+    python_ta.check_all(config={
+        'extra-imports': ['movie_user_classes', 'doctest'],
+        'allowed-io': [],
+        'max-line-length': 120
+    })
