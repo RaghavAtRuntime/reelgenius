@@ -1,5 +1,6 @@
-"""
-File containing main function/pages for graphical user interface
+"""This Python module contains the main functions/pages for the graphical user interface.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
 import tkinter as tk
 from tkinter import ttk

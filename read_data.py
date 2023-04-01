@@ -1,5 +1,6 @@
-"""
-File containing functions for importing data into a graph
+"""This Python module contains the functions used to read data from the datasets, and populate the given graph.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
 import csv
 
