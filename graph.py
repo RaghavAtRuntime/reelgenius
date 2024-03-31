@@ -1,17 +1,24 @@
+""" This Python module contains the Graph class used to represent the graph used in this project.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
-File containing the Graph class and functions to process graph data
-"""
+import doctest
+import python_ta
 from movie_user_classes import User, Movie
 
 
 class Graph:
-    """ A class to represent a graph
+    """ A class to represent a graph containing User and Movie objects.
 
     Instance Attributes:
     - _movies:
         A mapping of the movies stored in this graph. Each key is a movie id and each value is a Movie object
     - _users:
         A mapping of the users stored in this graph. Each key is a user id and each value is a User object
+
+    Representation Invariants:
+    - all({m == self._movies[m].movie_id for m in self._movies})
+    - all({u == self._users[u].user_id for u in self._users})
     """
     _movies: dict[int, Movie]
     _users: dict[int, User]
@@ -124,8 +131,11 @@ class Graph:
                 user.recommendations = unique_list
 
     def find_or_add_user(self, user_id: int) -> User:
-        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users, the function
-        instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+        """Returns the user in graph.users with user_id == id. If such a user does not exist in graph.users,
+        the function instead creates a new user with user_id = id, adds it to graph.users, and returns that user
+
+        Preconditions:
+        - user_id > 1
         """
         if not self.user_exists(user_id):
             self.add_user(User(user_id))
@@ -134,6 +144,9 @@ class Graph:
     def add_rating(self, user: User, movie_id: int, rating: float) -> None:
         """Adds a rating with movie id and rating to the user's movie_ratings attribute
         and adds a user and its user rating to the movie's user_ratings attribute
+
+        Preconditions:
+        - 0.5 <= rating <= 5.0
         """
         user.movie_ratings[movie_id] = rating
         movie = self.get_movie(movie_id)
@@ -152,7 +165,7 @@ class Graph:
 
 
 def _remove_duplicates(lst: list[str]) -> list[str]:
-    """Remove duplicates from a list, but keep the first occurrence of each item."""
+    """Remove duplicates from lst, but keep the first occurrence of each item."""
     seen = set()
     result = []
     for item in lst:
@@ -168,6 +181,11 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
     Given the user rating between a user and its compatible user, and the movie_dict of that compatible user, calculate
     the recommendation scores for each movie in the movie_dict by multiplying the ratings in the dict by the given user
     rating. Return a list of tuples containing the movie ID and its recommendation score.
+
+    Preconditions:
+    - 0.5 <= comp_score <= 5.0
+    - min_rating <= 5.0
+    - all({0.5 <= movie_ratings[m] <= 5.0 for m in movie_ratings})
     """
     rec_list = []
     for k in movie_ratings:
@@ -179,3 +197,12 @@ def _get_recommendation_scores(comp_score: float, movie_ratings: dict[int, float
         rec_score = rating_value * comp_score
         rec_list.append((k, rec_score))
     return rec_list
+
+
+if __name__ == '__main__':
+    doctest.testmod()
+    python_ta.check_all(config={
+        'extra-imports': ['movie_user_classes', 'doctest'],
+        'allowed-io': [],
+        'max-line-length': 120
+    })

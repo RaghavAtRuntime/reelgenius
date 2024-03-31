@@ -1,4 +1,8 @@
-# Movie and User Classes
+""" This Python module contains the User and Movies classes used in this project to represent a user and a movie
+in the datasets respectively.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
+"""
 from __future__ import annotations
 import doctest
 import python_ta
@@ -17,11 +21,12 @@ class User:
         A mapping containing compatible users. Each key is a user id, and each value is the compatibility score for the
         user
     - recommendations:
-        A list of recommended movies sorted by their recommendation score
+        A list of unique recommended movie ids sorted by their recommendation score
 
     Representation Invariants:
     - self.user_id > 0
-    - all({1 <= self.movie_ratings[m] <= 5 for m in self.movie_ratings})
+    - all({0.5 <= self.movie_ratings[m] <= 5.0 for m in self.movie_ratings})
+    - len(self.recommendations) == len(set(self.recommendations))
     """
     user_id: int
     movie_ratings: dict[int, float]
@@ -64,7 +69,7 @@ class Movie:
 
     Representation Invariants
     - self.movie_id > 0
-    - all({1 <= self.user_ratings[u] <= 5 for u in self.user_ratings})
+    - all({0.5 <= self.user_ratings[u] <= 5.0 for u in self.user_ratings})
     """
     movie_id: int
     title: str
@@ -78,7 +83,7 @@ class Movie:
         self.user_ratings = {}
 
     def get_users(self) -> list[int]:
-        """Return a set of user ids for users that have rated this movie
+        """Return a list of user ids for users that have rated this movie
         """
         return list(self.user_ratings)
 

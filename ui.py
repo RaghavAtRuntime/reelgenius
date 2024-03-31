@@ -1,5 +1,6 @@
-"""
-File containing main function/pages for graphical user interface
+"""This Python module contains the main functions/pages for the graphical user interface.
+
+This file is Copyright (c) 2023 Rohan Bhalla, Raghav Sinha, Grant Bogner, and Bora Celebi.
 """
 import tkinter as tk
 from tkinter import ttk
@@ -28,7 +29,7 @@ def ui_main(graph: Graph, load_fn: lambda _: _) -> None:
     loading_page.destroy()
 
     # User page
-    user = graph.get_user(randint(1, 5))
+    user = graph.get_user(randint(1, len(graph.get_all_users())-1))
     UserPage(root, graph, user)
     root.title("ReelGenius")
     root.mainloop()
