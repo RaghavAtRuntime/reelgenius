@@ -63,6 +63,9 @@
       <module name="ReelGenius" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -82,6 +85,9 @@
       <module name="reelgenius" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -149,6 +155,9 @@
       <workItem from="1679941934164" duration="2414000" />
       <workItem from="1679944492796" duration="2598000" />
       <workItem from="1680062737140" duration="7686000" />
+      <workItem from="1680315682711" duration="689000" />
+      <workItem from="1680362074488" duration="3170000" />
+      <workItem from="1680366689900" duration="1131000" />
     </task>
     <servers />
   </component>
